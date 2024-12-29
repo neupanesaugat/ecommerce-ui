@@ -14,6 +14,8 @@
     "@fontsource/roboto": "^5.1.0",
     "@mui/icons-material": "^6.2.1",
     "@mui/material": "^6.2.1",
+    "@tanstack/react-query": "^5.62.10",
+    "@tanstack/react-router": "^1.92.6",
     "axios": "^1.7.9",
     "ecommerce-ui": "file:",
     "formik": "^2.4.6",

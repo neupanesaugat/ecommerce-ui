@@ -1,12 +1,16 @@
 'use client';
 import { registerUserValidationSchema } from '@/validation-schema/register.user.validation.schema';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
   Button,
   FormControl,
   FormHelperText,
+  IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
   TextField,
 } from '@mui/material';
@@ -14,6 +18,17 @@ import { Formik } from 'formik';
 import React from 'react';
 
 const Register = () => {
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (event) => {
+    event.preventDefault();
+  };
   return (
     <Box>
       <Formik
@@ -33,10 +48,7 @@ const Register = () => {
       >
         {(formik) => {
           return (
-            <form
-              onSubmit={formik.handleSubmit}
-              className="flex flex-col gap-[20px] justify-between w-[400px] shadow-2xl shadow-slate-700 p-8 min-h-[400px]"
-            >
+            <form onSubmit={formik.handleSubmit} className="auth-form">
               <p className="flex text-3xl justify-center">Register</p>
               {/* Email */}
               <FormControl fullWidth>
@@ -48,15 +60,34 @@ const Register = () => {
                   <FormHelperText error>{formik.errors.email}</FormHelperText>
                 ) : null}
               </FormControl>
-              <FormControl fullWidth>
-                <TextField
-                  label="Password"
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
                   {...formik.getFieldProps('password')}
-                ></TextField>
-                {formik.touched.password && formik.errors.password ? (
-                  <FormHelperText error>
-                    {formik.errors.password}
-                  </FormHelperText>
+                  type={showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? 'hide the password'
+                            : 'display the password'
+                        }
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+                {formik.touched.email && formik.errors.email ? (
+                  <FormHelperText error>{formik.errors.email}</FormHelperText>
                 ) : null}
               </FormControl>
               <FormControl fullWidth>

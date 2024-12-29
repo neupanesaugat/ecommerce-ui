@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Nepal Mart: Auth',
-  description: 'Auth',
+  title: "Nepal Mart: Auth",
+  description: "Auth",
 };
 
 const AuthLayout = ({ children }) => {

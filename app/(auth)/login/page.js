@@ -46,10 +46,7 @@ const Login = () => {
       >
         {(formik) => {
           return (
-            <form
-              onSubmit={formik.handleSubmit}
-              className="flex flex-col justify-between items-center w-[400px] shadow-2xl shadow-slate-700 p-8 min-h-[400px]"
-            >
+            <form onSubmit={formik.handleSubmit} className="auth-form">
               <p className="text-3xl">Sign in</p>
               {/* Email */}
               <FormControl fullWidth>
