@@ -1,10 +1,11 @@
 'use client';
 import BuyerList from '@/components/BuyerList';
+import ProductCard from '@/components/ProductCard';
 import SellerList from '@/components/SellerList';
 import React from 'react';
 
 const Home = () => {
-  const userRole = localStorage.getItem('userRole');
+  const userRole = window.localStorage.getItem('userRole');
 
   return (
     <div>
