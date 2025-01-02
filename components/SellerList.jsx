@@ -1,48 +1,62 @@
 'use-client';
-import React from 'react';
+import React, { useState } from 'react';
 import ProductCard from './ProductCard';
 import { useQuery } from '@tanstack/react-query';
 import $axios from '@/lib/axios.instance';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Pagination } from '@mui/material';
+import Loader from './Loader';
 
 const SellerList = () => {
+  const [page, setPage] = useState(1);
   const { isPending, data, error } = useQuery({
-    queryKey: ['seller-product-list'],
+    queryKey: ['seller-product-list', page],
     queryFn: async () => {
       return await $axios.post('/product/seller/list', {
-        page: 1,
-        limit: 10,
+        page,
+        limit: 2,
         searchText: '',
       });
     },
   });
-  console.log(data);
+
   const productList = data?.data?.productList || [];
 
   if (isPending) {
-    return <CircularProgress />;
+    return <Loader />;
   }
   return (
-    <div className="card-center">
-      {productList.length ? (
-        productList?.map((item) => {
-          return (
-            <ProductCard
-              key={item._id}
-              // _id={item._id}
-              // brand={item.brand}
-              // name={item.name}
-              // price={item.image}
-              // description={item.description}
-              // image = {item.image}
-              //? alternative code for above
-              {...item}
-            />
-          );
-        })
-      ) : (
-        <p>No product</p>
-      )}
+    <div className="h-full ">
+      <div className="card-center">
+        {productList.length ? (
+          productList?.map((item) => {
+            return (
+              <ProductCard
+                key={item._id}
+                // _id={item._id}
+                // brand={item.brand}
+                // name={item.name}
+                // price={item.image}
+                // description={item.description}
+                // image = {item.image}
+                //? alternative code for above
+                {...item}
+              />
+            );
+          })
+        ) : (
+          <p>No product</p>
+        )}
+      </div>
+      <Pagination
+        page={page}
+        count={5}
+        color="secondary"
+        size="large"
+        className="card-center"
+        onChange={(_, value) => {
+          setPage(value);
+        }}
+      ></Pagination>
     </div>
   );
 };
