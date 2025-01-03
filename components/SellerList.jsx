@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import $axios from '@/lib/axios.instance';
 import { CircularProgress, Pagination } from '@mui/material';
 import Loader from './Loader';
+import { isSeller } from '@/utils/check.role';
 
 const SellerList = () => {
   const [page, setPage] = useState(1);
@@ -17,6 +18,7 @@ const SellerList = () => {
         searchText: '',
       });
     },
+    enabled: isSeller(),
   });
 
   const productList = data?.data?.productList || [];
