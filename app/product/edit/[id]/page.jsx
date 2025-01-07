@@ -1,4 +1,5 @@
 'use client';
+import Loader from '@/components/Loader';
 import { productCategories } from '@/constants/general.constants';
 import $axios from '@/lib/axios.instance';
 import { addProductValidationSchema } from '@/validation-schema/product.validation.schema';
@@ -14,39 +15,35 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Formik } from 'formik';
-import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 const AddProduct = () => {
-  const router = useRouter();
-  const { isPending, error, mutate } = useMutation({
-    mutationKey: ['add-product'],
-    mutationFn: async (values) => {
-      return await $axios.post('/product/add', values, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('token')}`,
-        },
-      });
-    },
-    onSuccess: (res) => {
-      router.push('/');
-    },
-    onError: (res) => {
-      console.log(error);
+  const params = useParams();
+  const { data, isPending } = useQuery({
+    queryKey: ['edit-product-list'],
+    queryFn: async () => {
+      return await $axios.get(`/product/detail/${params.id}`);
     },
   });
+  const productDetail = data?.data?.productDetails;
+
+  if (isPending) {
+    return <Loader />;
+  }
+
   return (
     <Box>
       <Formik
         initialValues={{
-          name: '',
-          brand: '',
-          price: '',
-          quantity: 1,
-          category: '',
-          freeShipping: false,
-          description: '',
+          name: productDetail.name || '',
+          brand: productDetail.brand || '',
+          price: productDetail.price || '',
+          quantity: productDetail.quantity || 1,
+          category: productDetail.category || '',
+          freeShipping: productDetail.freeShipping || false,
+          description: productDetail.description || '',
         }}
         validationSchema={addProductValidationSchema}
         onSubmit={(values) => {
@@ -57,7 +54,7 @@ const AddProduct = () => {
         {(formik) => {
           return (
             <form onSubmit={formik.handleSubmit} className="auth-form">
-              <p className="flex text-3xl justify-center">Add Product</p>
+              <p className="flex text-3xl justify-center">Edit Product</p>
               {/* Email */}
               <FormControl fullWidth>
                 <TextField
