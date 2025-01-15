@@ -15,31 +15,44 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Formik } from 'formik';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 const AddProduct = () => {
+  const router = useRouter();
   const params = useParams();
+  const productId = params?.id;
   const { data, isPending } = useQuery({
     queryKey: ['edit-product-list'],
     queryFn: async () => {
-      return await $axios.get(`/product/detail/${params.id}`);
+      return await $axios.get(`/product/detail/${productId}`);
+    },
+  });
+
+  const { isPending: editPending, mutate } = useMutation({
+    mutationKey: ['edit-product'],
+    mutationFn: async (values) => {
+      return await $axios.put(`/product/edit/${productId}`, values);
+    },
+    onSuccess: () => {
+      router.push(`/product/details/${productId}`);
     },
   });
   const productDetail = data?.data?.productDetails;
 
-  if (isPending) {
+  if (isPending || editPending) {
     return <Loader />;
   }
 
   return (
     <Box>
       <Formik
+        enableReinitialize
         initialValues={{
           name: productDetail.name || '',
           brand: productDetail.brand || '',
-          price: productDetail.price || '',
+          price: productDetail.price || 0,
           quantity: productDetail.quantity || 1,
           category: productDetail.category || '',
           freeShipping: productDetail.freeShipping || false,
@@ -47,7 +60,6 @@ const AddProduct = () => {
         }}
         validationSchema={addProductValidationSchema}
         onSubmit={(values) => {
-          console.log(values);
           mutate(values);
         }}
       >
@@ -137,7 +149,10 @@ const AddProduct = () => {
               >
                 <FormControlLabel
                   control={
-                    <Checkbox {...formik.getFieldProps('freeShipping')} />
+                    <Checkbox
+                      checked={formik?.values?.freeShipping}
+                      {...formik.getFieldProps('freeShipping')}
+                    />
                   }
                   label="Free Shipping"
                   labelPlacement="start"

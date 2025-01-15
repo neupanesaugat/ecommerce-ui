@@ -1,13 +1,13 @@
 'use client';
+import { isSeller } from '@/utils/check.role';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
-import React from 'react';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { isSeller } from '@/utils/check.role';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import DeleteProductDialog from './DeleteProductDialog';
 
 const ProductCard = (props) => {
+  const params = useParams();
   const productId = props._id;
   const router = useRouter();
   return (
@@ -44,15 +44,7 @@ const ProductCard = (props) => {
           {props.description} ...
         </Typography>
         <Stack direction="row" justifyContent="space-between">
-          {isSeller() && (
-            <Button
-              color="error"
-              variant="contained"
-              startIcon={<DeleteOutlineOutlinedIcon />}
-            >
-              Delete
-            </Button>
-          )}
+          {isSeller() && <DeleteProductDialog productDetail={productId} />}
           <Button
             color="success"
             variant="contained"

@@ -74,7 +74,7 @@ const Login = () => {
               <Button
                 type="submit"
                 variant="contained"
-                color="secondary"
+                color="success"
                 fullWidth
               >
                 Login
